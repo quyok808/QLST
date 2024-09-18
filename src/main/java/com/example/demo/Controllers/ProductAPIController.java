@@ -75,15 +75,28 @@ public class ProductAPIController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> editProduct (@PathVariable Long id,
-                                                @RequestBody Product changedProduct)
+                                                @RequestParam("name") String name,
+                                                @RequestParam("price") Double price,
+                                                @RequestParam("description") String description,
+                                                @RequestParam("quantity") Integer quantity,
+                                                @RequestParam("category") Long categoryId,
+                                                @RequestPart(value = "image", required = false) MultipartFile image) throws Exception
     {
         Product currentProduct = _productService.getProductById(id).orElseThrow(() -> new RuntimeException("Product not found on :: " + id));
-        currentProduct.setName(changedProduct.getName());
-        currentProduct.setPrice(changedProduct.getPrice());
-        currentProduct.setDescription(changedProduct.getDescription());
-        currentProduct.setImage(changedProduct.getImage());
-        currentProduct.setQuantity(changedProduct.getQuantity());
-        currentProduct.getCategory().setId(changedProduct.getCategory().getId());
+        currentProduct.setName(name);
+        currentProduct.setPrice(price);
+        currentProduct.setDescription(description);
+        currentProduct.setQuantity(quantity);
+        Optional<Category> newCateProduct = _categoryService.getCategoryById(categoryId);
+        currentProduct.setCategory(newCateProduct.get());
+        if (image != null && !image.isEmpty()) {
+            Path uploadPath = Paths.get(uploadDir);
+            String orgName = image.getOriginalFilename();
+            String uniqueFileName = orgName;
+            Path filePath = uploadPath.resolve(uniqueFileName);
+            image.transferTo(filePath.toFile());
+            currentProduct.setImage(uniqueFileName);
+        }
 
         final Product updateProduct = _productService.addProduct(currentProduct);
         return ResponseEntity.ok(updateProduct);
