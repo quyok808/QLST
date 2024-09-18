@@ -22,5 +22,6 @@ public class Product {
     private String description;
     private String image;
     private int quantity;
-    private Long categoryId;
+    @ManyToOne
+    private Category category;
 }
