@@ -1,6 +1,6 @@
 package com.example.demo.Models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,16 +12,17 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Product")
-public class Product {
+@Table(name = "OrderDetail")
+public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private double price;
-    private String description;
-    private String image;
     private int quantity;
     @ManyToOne
-    private Category category;
+    @JoinColumn(name = "product_id")
+    private Product product;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    @JsonIgnore
+    private Order order;
 }
