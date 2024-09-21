@@ -1,13 +1,14 @@
 package com.example.demo.Controllers;
 
-import com.example.demo.Models.Category;
 import com.example.demo.Models.Order;
+import com.example.demo.Service.OrderDetailsService;
 import com.example.demo.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -15,10 +16,16 @@ import java.util.List;
 public class OrderAPIController {
     @Autowired
     private OrderService _orderService;
+    @Autowired
+    private OrderDetailsService _orderdetailsService;
 
     @GetMapping
     public List<Order> getAllOrders(){
         return _orderService.getAllOrder();
+    }
+    @GetMapping("/{id}")
+    public Optional<Order> getOrderById(@PathVariable Long id){
+        return _orderService.getOrderById(id);
     }
     @PostMapping
     public Order addOrder(@RequestBody Order newOrder){

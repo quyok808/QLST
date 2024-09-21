@@ -2,14 +2,17 @@ package com.example.demo.Service;
 
 import com.example.demo.Models.Order;
 import com.example.demo.Models.OrderDetail;
+import com.example.demo.Models.Product;
 import com.example.demo.Repository.OrderRepository;
 import com.example.demo.Repository.OrderdetailsRepository;
+import com.example.demo.Repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +22,8 @@ import java.util.Optional;
 public class OrderService {
     private final OrderRepository _orderRepository;
     private final OrderdetailsRepository _orderdetailsRepository;
+    private final ProductRepository _productRepository;
+
     //GET
 
     public List<Order> getAllOrder(){
@@ -32,6 +37,22 @@ public class OrderService {
     //POST
 
     public Order addOrder(Order newOrder){
+        newOrder.setOrderdate(LocalDateTime.now());
+        if (newOrder.getOrderdetails() != null){
+            for (OrderDetail item : newOrder.getOrderdetails()){
+                Product product = _productRepository.getReferenceById(item.getProduct().getId());
+                int currentQuantity = product.getQuantity() - item.getQuantity();
+                if (currentQuantity > 0) {
+                    product.setQuantity(currentQuantity);
+                }
+                else {
+                    product.setQuantity(0);
+                }
+                _productRepository.save(product);
+                item.setOrder(newOrder);
+            }
+        }
+
         return _orderRepository.save(newOrder);
     }
     //DELETE
