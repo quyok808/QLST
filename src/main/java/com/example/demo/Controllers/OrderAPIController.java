@@ -31,6 +31,7 @@ public class OrderAPIController {
     public Order addOrder(@RequestBody Order newOrder){
         return _orderService.addOrder(newOrder);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCate(@PathVariable Long id) {
         Order order = _orderService.getOrderById(id)
@@ -40,11 +41,20 @@ public class OrderAPIController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateCategory(@PathVariable Long id, @RequestBody Order updateOrder){
+    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order updateOrder){
         Order currentOrder = _orderService.getOrderById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found on :: " + id));
         updateOrder.setId(id);
         _orderService.updateOrder(updateOrder);
         return ResponseEntity.ok(updateOrder);
+    }
+
+    @PutMapping("/orderstatus/{id}")
+    public ResponseEntity<Order> updateOrderStatus (@PathVariable Long id, @RequestParam("status") String status){
+        Order currentOrder = _orderService.getOrderById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found on :: " + id));
+        currentOrder.setStatus(status);
+        _orderService.updateOrder(currentOrder);
+        return ResponseEntity.ok(currentOrder);
     }
 }

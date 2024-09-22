@@ -27,6 +27,8 @@ public class Order {
     private String City;
     private int Total;
     private String Note;
+    private String Status;
+    private String paymentMethod;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetail> orderdetails;
 }
