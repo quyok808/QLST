@@ -5,6 +5,7 @@ import com.example.demo.Models.User;
 import com.example.demo.Repository.RoleRepository;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.config.Role;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,6 +45,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
@@ -52,7 +54,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(user.get()); // Use CustomUserDetails instead
     }
 
-
-
+    public boolean existsUser (String username){
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.isEmpty();
+    }
 }
 

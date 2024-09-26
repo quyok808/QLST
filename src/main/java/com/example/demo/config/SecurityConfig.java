@@ -62,10 +62,9 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .requestMatchers("/", "/v1/api/auth/login","/v1/api/**","/Product_images/**", "/register", "/login", "/css/**", "/js/**").permitAll() // Cho phép truy cập không cần đăng nhập
                 .requestMatchers(HttpMethod.POST,"/v1/api/register").permitAll()
-                .requestMatchers("/admin").authenticated()
+                .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);// Các trang khác yêu cầu xác thực
+                // Các trang khác yêu cầu xác thực
 //                .and()
 //                .formLogin()
 //                .loginPage("/login") // Trang đăng nhập tùy chỉnh
@@ -77,7 +76,8 @@ public class SecurityConfig {
 //                .logoutSuccessUrl("/login?logout") // Sau khi đăng xuất, chuyển hướng tới trang đăng nhập
 //                .permitAll();
                 // Nếu gặp vấn đề với form đăng nhập, có thể tắt CSRF
-
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

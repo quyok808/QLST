@@ -4,6 +4,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+import java.util.Set;
 
 @Data
 @RequiredArgsConstructor
@@ -15,11 +19,13 @@ public class UserResponse {
     private String email;
     private String firstname;
     private String lastname;
+    private Collection<? extends GrantedAuthority> roles;
     public UserResponse(CustomUserDetails customUserDetails) {
         this.id = customUserDetails.getUser().getId();
         this.username = customUserDetails.getUsername();
         this.email = customUserDetails.getUser().getEmail();
         this.firstname = customUserDetails.getUser().getFirstname();
         this.lastname = customUserDetails.getUser().getLastname();
+        this.roles = customUserDetails.getAuthorities();
     }
 }

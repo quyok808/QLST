@@ -17,6 +17,9 @@ public class RegisterController {
     public ResponseEntity<?> createUser(@RequestBody User newUser) {
         try {
             System.out.println(newUser.getEmail());
+            if (!customUserDetailsService.existsUser(newUser.getEmail())){
+                throw new RuntimeException("User đã tồn tại trong hệ thống");
+            }
             customUserDetailsService.addUser(newUser);
             return ResponseEntity.ok("User registered successfully!");
         } catch (Exception e) {
