@@ -2,13 +2,17 @@ package com.example.demo.Controllers;
 
 
 import com.example.demo.Models.Category;
+import com.example.demo.Models.CustomUserDetails;
 import com.example.demo.Models.Product;
+import com.example.demo.Models.User;
 import com.example.demo.Service.CategoryService;
 import com.example.demo.Service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,10 +32,23 @@ public class ProductAPIController {
     @Value("${upload.dir}")
     private String uploadDir;
 
-    @GetMapping
-    public List<Product> getAllProduct(){
-        return _productService.getAll();
-    }
+@GetMapping
+public List<Product> getAllProduct(){
+    return _productService.getAll();
+}
+//    public ResponseEntity<List<Product>> getAllProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+//        System.out.println("Authenticated user: lalalalala");
+//        if (customUserDetails == null) {
+//            // Xử lý trường hợp không có người dùng nào được xác thực
+//            System.out.println("Authenticated user: lalalalala");
+//            return null;
+//        }
+//        System.out.println("Authenticated user: " + customUserDetails.getUsername());
+//        // Lấy thông tin người dùng từ customUserDetails
+//        List<Product> products = _productService.getAll();
+//
+//        return ResponseEntity.ok(products);
+//    }
 
     @PostMapping
     public Product createProduct(
